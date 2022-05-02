@@ -1,5 +1,8 @@
 package service;
 
+import java.util.ArrayList;
+
+import dto.InputTest;
 import dao.InputTestDao;
 
 public class InputTestService {
@@ -14,8 +17,13 @@ public class InputTestService {
 		
 		return insertResult;
 	}
-	
+
 	// 조회 기능 메소드
+	public ArrayList<InputTest> selectTest() {
+		ArrayList<InputTest> testList = itDao.selectTest();
+		return testList;
+	}
+	
 	
 	// 수정 기능 메소드
 	

@@ -5,6 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
+import dto.InputTest;
 
 public class InputTestDao {
 
@@ -42,5 +45,24 @@ public class InputTestDao {
 			e.printStackTrace();
 		}
 		return insertResult;
+	}
+
+	public ArrayList<InputTest> selectTest() {
+		String sql = "SELECT * FROM INPUTTEST";
+		ArrayList<InputTest> testList = new ArrayList<InputTest>();
+		InputTest ipt = null;
+		try {
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				ipt = new InputTest();
+				ipt.setTestcol1(rs.getString(1));
+				ipt.setTestcol2(rs.getString(2));
+				testList.add(ipt);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return testList;
 	}
 }

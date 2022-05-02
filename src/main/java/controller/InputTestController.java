@@ -1,12 +1,16 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dto.InputTest;
 import service.InputTestService;
 
 /**
@@ -55,7 +59,24 @@ public class InputTestController extends HttpServlet {
 			break;
 			
 		case "/selectTest":
+			System.out.println("데이터 select 기능");
+			// 1. 데이터 조회 기능 메소드 호출
+			// 2. 리스트를 리턴 받음
+			ArrayList<InputTest> testList = itSvc.selectTest();
+			System.out.println("testList.size() : " + testList.size());
 			
+			// 3. 
+			if ( testList.size() > 0 ) {
+				// 성공했을 때 보여줄 페이지로 포워딩 (dispatcher 방식)
+//				System.out.println(testList.toString());
+				request.setAttribute("testList", testList);
+				RequestDispatcher dispatcher = request.getRequestDispatcher("Success.jsp");
+				dispatcher.forward(request, response);
+				// Success.jsp
+			} else {
+				// 실패했을 때 보여줄 페이지로 포워딩
+				response.sendRedirect("Fail.jsp");
+			}
 			break;
 		}	
 		
