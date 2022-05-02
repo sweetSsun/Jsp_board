@@ -5,12 +5,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import dto.InputTest;
+import dto.Board;
 
-public class InputTestDao {
-
+public class BoardDao {
+	
 	Connection con;
 	PreparedStatement pstmt;
 	ResultSet rs;
@@ -22,7 +21,7 @@ public class InputTestDao {
 		return con;
 	}
 	
-	public InputTestDao() {
+	public BoardDao() {
 		try {
 			con = getConnection();
 			System.out.println("DB연결 성공!");
@@ -31,38 +30,38 @@ public class InputTestDao {
 			e.printStackTrace();
 		}
 	}
+
+	// 글번호 최대값 조회
+	public int getMaxBno() {
+		String sql = "SELECT NVL(MAX(BNO), 0) FROM BOARD";
+		int maxBno = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				maxBno = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return maxBno;
+	}
 	
-	public int insertTest(String testData01, String testData02) {
-		String sql = "INSERT INTO INPUTTEST VALUES(?,?)";
+	public int insertBoard(Board boardInfo) {
+		String sql = "INSERT INTO BOARD VALUES (?,?,?,?,SYSDATE)";
 		int insertResult = 0;
 		
 		try {
 			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, testData01);
-			pstmt.setString(2, testData02);
+			pstmt.setInt(1, boardInfo.getBno());
+			pstmt.setString(2, boardInfo.getBwriter());
+			pstmt.setString(3, boardInfo.getBtitle());
+			pstmt.setString(4, boardInfo.getBcontents());
 			insertResult = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}		
 		return insertResult;
 	}
 
-	public ArrayList<InputTest> selectTest() {
-		String sql = "SELECT * FROM INPUTTEST";
-		ArrayList<InputTest> testList = new ArrayList<InputTest>();
-		InputTest ipt = null;
-		try {
-			pstmt = con.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			while(rs.next()) {
-				ipt = new InputTest();
-				ipt.setTestcol1(rs.getString(1));
-				ipt.setTestcol2(rs.getString(2));
-				testList.add(ipt);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}		
-		return testList;
-	}
 }
