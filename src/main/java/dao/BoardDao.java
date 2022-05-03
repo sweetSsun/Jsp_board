@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import dto.Board;
 
@@ -62,6 +63,27 @@ public class BoardDao {
 			e.printStackTrace();
 		}		
 		return insertResult;
+	}
+
+	public ArrayList<Board> selectBoardList() {
+		String sql = "SELECT * FROM BOARD";
+		ArrayList<Board> bdList = new ArrayList<Board>();
+		try {
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				Board board = new Board();
+				board.setBno(rs.getInt(1));
+				board.setBwriter(rs.getString(2));
+				board.setBtitle(rs.getString(3));
+				board.setBcontents(rs.getString(4));
+				board.setBdate(rs.getString(5));
+				bdList.add(board);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return bdList;
 	}
 
 }
