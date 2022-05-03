@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,7 +31,7 @@
 <body>
 	<h1>Board/BoardWrite.jsp</h1>
 	<h3>글 작성 페이지</h3>
-	<form action="boardWrite" method="get">
+	<form action="boardWrite" method="post">
 	<table>
 		<tr>
 			<th>작성자</th>

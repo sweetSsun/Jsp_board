@@ -16,7 +16,7 @@ import service.BoardService;
 /**
  * Servlet implementation class BoardController
  */
-@WebServlet( {"/Board/boardWrite", "/Board/boardList"})
+@WebServlet( {"/Board/boardWrite", "/Board/boardList", "/Board/boardView", "/Board/boardDelete"})
 // 패턴을 맞추려고 Board를 붙여주는걸까요????????
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -41,6 +41,7 @@ public class BoardController extends HttpServlet {
 		
 		BoardService bsvc = new BoardService();
 		RequestDispatcher dispatcher; // dispatcher를 여러번 사용해야 하기 때문에 선언을 switch문 위에서
+		request.setCharacterEncoding("UTF-8");
 		
 		switch(url) {
 		case "/Board/boardWrite":
@@ -83,7 +84,6 @@ public class BoardController extends HttpServlet {
 			// 1. 글 목록 조회 서비스 기능 호출 및 리턴
 			System.out.println("글 목록 페이지 이동 요청");
 			ArrayList<Board> bdList = bsvc.getBoardList();
-			System.out.println(bdList);
 			// 2. 리턴 값에 따라 페이지 포워딩
 			
 			
@@ -102,6 +102,32 @@ public class BoardController extends HttpServlet {
 				response.sendRedirect(contextPath+"/BoardMain.jsp");
 			}
 			break;		
+			
+		case "/Board/boardView":
+			System.out.println("글 상세페이지 이동 요청");
+			// request에 글번호 파라미터값 확인
+			int bno = Integer.parseInt(request.getParameter("bno"));
+			System.out.println("상세보기 글번호 : " + bno);
+			// 1. boardService 글 조회 기능 호출 및 글 정보 리턴
+			Board board = bsvc.getBoardInfo(bno);
+			request.setAttribute("board", board);
+			// console 출력 (System.out.println)
+			dispatcher = request.getRequestDispatcher("/Board/BoardView.jsp");
+			dispatcher.forward(request, response);
+			
+			// "BoardView.jsp"
+			break;
+		
+		case "/Board/boardDelete":
+			System.out.println("글 삭제 요청");
+			// request에 글번호 파라미터값 
+			int delBno = Integer.parseInt(request.getParameter("delBno"));
+			System.out.println("삭제할 글번호 : " + delBno);
+			
+			String delBtitle = request.getParameter("delBtitle");
+			System.out.println("삭제할 글제목 : " + delBtitle);
+			
+			break;
 		}
 	}
 

@@ -86,4 +86,25 @@ public class BoardDao {
 		return bdList;
 	}
 
+	public Board selectBoardInfo(int bno) {
+		String sql = "SELECT * FROM BOARD WHERE BNO=?";
+		Board board = null;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				board = new Board();
+				board.setBno(rs.getInt(1));
+				board.setBwriter(rs.getString(2));
+				board.setBtitle(rs.getString(3));
+				board.setBcontents(rs.getString(4));
+				board.setBdate(rs.getString(5));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return board;
+	}
+
 }
