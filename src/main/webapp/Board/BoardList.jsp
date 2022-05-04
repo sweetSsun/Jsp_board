@@ -18,10 +18,43 @@
 	}
 </style>
 </head>
+<script type="text/javascript">
+	var checkMsg = "${param.checkMsg}";
+	if (checkMsg) {
+		alert("글이 삭제되었습니다.")
+	}
+</script>
 <body>
 	<h1>Board/BoardList.jsp</h1>
 	<h3>글 목록 페이지</h3>
-	<table>
+	<table>	
+	
+	<c:if test="${param.searchText != '' and param.searchText != null }">
+	<!-- test : 조건이 들어가는 영역
+	${param.searchText != '' } : parameter에 담긴 값이 길이가 0이 아니거나
+	${param.searchText != null } : null값이 아니거나 -->
+	<!-- searchText라는 파라미터는 "/Board/boardSearch"가 호출된 후
+	dispatcher 방식으로 response 받아 request의 파라미터가 존재하고 있기 때문에 사용 가능 -->
+		<tr>
+			<th colspan="4">
+				[${param.searchText }] 검색 결과입니다.
+			</th>
+		</tr>
+	</c:if>
+		<tr>
+			<th colspan="4">
+			<form action="boardSearch" method=get>
+				<select name="searchType" id="searchType" onchange="changePlaceholder()">
+					<option value="btitle">글제목</option>
+					<option value="bwriter">작성자</option>
+					<option value="bcontents">글내용</option>
+				</select>
+				<input type="text" name="searchText" id="searchText" placeholder="검색할 글제목">
+				<input type="submit" value="검색">
+				<!-- 검색 결과는 BoardList.jsp를 재활용 -->
+			</form>
+			</th>
+		</tr>
 		<tr>
 			<th>글번호</th>
 			<th>글제목</th>
@@ -52,10 +85,21 @@
 			<td>${board.bwriter }</td>
 			<td>${board.bdate }</td>
 		</tr>
-		</c:forEach>
-  
-		
-	</table>
-	
+		</c:forEach>		
+	</table>	
 </body>
+<script type="text/javascript">
+	function changePlaceholder(){
+		var check = document.getElementById("searchType").value;
+		console.log(check);
+		if (check == "btitle") {
+			check = "검색할 제목";
+		} else if (check == "bwriter") {
+			check = "검색할 작성자";
+		} else {
+			check = "검색할 글내용"
+		}
+		document.getElementById("searchText").placeholder = check;
+	}
+</script>
 </html>

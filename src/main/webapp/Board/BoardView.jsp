@@ -44,7 +44,17 @@
 		</tr>
 		<tr>
 			<th colspan="2">
-				<button>글수정</button>
+				<!-- 
+				 글 수정 기능
+				1. 글 상세페이지에서 글 수정버튼 클릭
+				2. /Board/boardModifyForm 요청 - parameter : 글번호 
+				3. 글 정보를 조회 - Board/BoardModifyForm.jsp 포워딩
+				4. 수정할 컬럼 : 제목, 내용
+				5. /Board/boardModify 요청 - parameter : 글번호, 글제목, 글내용
+				6. 수정기능 수행 후 성공 :: 글 상세페이지로
+				 				실패 :: BoardFail.jsp -->
+					
+				<button onclick="boardModify('${board.bno }')">글수정</button>
 				<button onclick="boardDelete('${board.bno }', '${board.btitle }')">글삭제</button> 
 				<!-- onclick 속성을 표현하기 위해 function이 더블쿼터를 사용하고 있기 때문에
 				 그 내부의 문자표현(파라미터)은 싱글쿼터로 표현한다 -->
@@ -54,11 +64,23 @@
 </body>
 
 <script type="text/javascript">
+
+	function boardModify(mdBno){
+		console.log("boardModify() 호출");
+		console.log("삭제할 글번호 : " + mdBno);
+		location.href = "boardModifyForm?mdBno="+mdBno;
+	}
+	
 	function boardDelete(delBno, delTitle){
-		console.log("boardDelete() 호출")
+		console.log("boardDelete() 호출");
 		console.log("삭제할 글번호 : " + delBno);
 		console.log("삭제할 글제목 : " + delTitle);
 		location.href = "boardDelete?delBno="+delBno+"&delBtitle="+delTitle;
+		/* 글삭제를 onclick 하면 boardDelete function이 실행되고,
+			function 내에서 location.href를 통해 서블릿을 호출 */
 	}
 </script>
 </html>
+
+
+

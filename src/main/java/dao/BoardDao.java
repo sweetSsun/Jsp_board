@@ -107,4 +107,56 @@ public class BoardDao {
 		return board;
 	}
 
+	public int deleteBoard(int delBno) {
+		String sql = "DELETE FROM BOARD WHERE BNO=?";
+		int delResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, delBno);
+			delResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return delResult;
+	}
+
+	public int boardModify(Board board) {
+		String sql = "UPDATE BOARD SET BTITLE=?, BCONTENTS=? WHERE BNO=?";
+		int updateResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, board.getBtitle());
+			pstmt.setString(2, board.getBcontents());
+			pstmt.setInt(3, board.getBno());
+			updateResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return updateResult;
+	}
+
+	public ArrayList<Board> searchBoard(String searchText, String searchType) {
+		String sql = "SELECT * FROM BOARD WHERE " + searchType + " LIKE '%'||?||'%'"
+					+ "ORDER BY BNO";
+		ArrayList<Board> searchList = new ArrayList<Board>();
+		try {
+			pstmt = con.prepareStatement(sql);
+//			String text = "%" + searchText + "%";
+			pstmt.setString(1, searchText);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				Board board = new Board();
+				board.setBno(rs.getInt(1));
+				board.setBwriter(rs.getString(2));
+				board.setBtitle(rs.getString(3));
+				board.setBcontents(rs.getString(4));
+				board.setBdate(rs.getString(5));
+				searchList.add(board);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return searchList;
+	}
+
 }

@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
@@ -16,8 +17,10 @@ import service.BoardService;
 /**
  * Servlet implementation class BoardController
  */
-@WebServlet( {"/Board/boardWrite", "/Board/boardList", "/Board/boardView", "/Board/boardDelete"})
-// 패턴을 맞추려고 Board를 붙여주는걸까요????????
+@WebServlet( {"/Board/boardWrite", "/Board/boardList", "/Board/boardView",
+	"/Board/boardDelete", "/Board/boardModifyForm", "/Board/boardModify",
+	"/Board/boardSearch"})
+// 패턴을 맞추려고 Board를 붙여준 것
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -39,6 +42,7 @@ public class BoardController extends HttpServlet {
 		System.out.println("contextPath : " + contextPath);
 //		webapp >> http://localhost:8080/Jsp_board/
 		
+		Board board;
 		BoardService bsvc = new BoardService();
 		RequestDispatcher dispatcher; // dispatcher를 여러번 사용해야 하기 때문에 선언을 switch문 위에서
 		request.setCharacterEncoding("UTF-8");
@@ -68,8 +72,7 @@ public class BoardController extends HttpServlet {
 				// BoardMain.jsp로 이동
 				// 절대경로를 만들어주는 것 (페이지가 많아질 경우 절대경로로 하는게 편함)
 //				response.sendRedirect(contextPath+"/BoardMain.jsp"); // 절대경로
-//				response.sendRedirect("../BoardMain.jsp"); // 상대경로
-				// 해당 페이지에서의 상대경로
+//				response.sendRedirect("../BoardMain.jsp"); // 상대경로 (해당 페이지에서의 상대경로)
 			} else {
 				// 2. 글작성에 실패했을 경우
 				// BoardWrite.jsp로 이동
@@ -109,7 +112,7 @@ public class BoardController extends HttpServlet {
 			int bno = Integer.parseInt(request.getParameter("bno"));
 			System.out.println("상세보기 글번호 : " + bno);
 			// 1. boardService 글 조회 기능 호출 및 글 정보 리턴
-			Board board = bsvc.getBoardInfo(bno);
+			board = bsvc.getBoardInfo(bno, true);
 			request.setAttribute("board", board);
 			// console 출력 (System.out.println)
 			dispatcher = request.getRequestDispatcher("/Board/BoardView.jsp");
@@ -120,13 +123,76 @@ public class BoardController extends HttpServlet {
 		
 		case "/Board/boardDelete":
 			System.out.println("글 삭제 요청");
-			// request에 글번호 파라미터값 
+			// request에 글번호 파라미터값 확인
 			int delBno = Integer.parseInt(request.getParameter("delBno"));
 			System.out.println("삭제할 글번호 : " + delBno);
-			
 			String delBtitle = request.getParameter("delBtitle");
 			System.out.println("삭제할 글제목 : " + delBtitle);
+			// service 글삭제 기능 호출 및 결과값 반환
+			int delResult = bsvc.deleteBoard(delBno);
+			System.out.println(delResult + "개의 게시글이 삭제되었습니다.");
+			if(delResult > 0) {
+				// 글 목록 페이지로 이동
+				response.sendRedirect(contextPath+"/Board/boardList?checkMsg=true");
+			} else {
+				// 글 상세페이지로
+//				response.sendRedirect(contextPath+"/Board/BoardView?bno="+delBno);
+
+				// Board/BoardFail.jsp로
+				// 실패 페이지로 이동하면서 파라미터값 전송 > script에서 파라미터값 확인하고 안내 후 뒤로가기(history.back();)
+				String errorMsg = "No." + delBno + " Delete Fail";
+				response.sendRedirect(contextPath+"/Board/BoardFail.jsp?errorMsg="+errorMsg);
+			}
+			break;
 			
+		case "/Board/boardModifyForm":
+			System.out.println("글 수정페이지 요청");
+			int mdBno = Integer.parseInt(request.getParameter("mdBno"));
+			System.out.println("수정할 글번호 : " + mdBno);
+			Board mdBoard = bsvc.getBoardInfo(mdBno, false);
+			request.setAttribute("mdBoard", mdBoard);
+			dispatcher = request.getRequestDispatcher("/Board/BoardModifyForm.jsp");
+			dispatcher.forward(request, response);
+			break;
+		
+		case "/Board/boardModify":
+			System.out.println("글 수정 요청");
+			int modiBno = Integer.parseInt(request.getParameter("bno"));
+			String modiBtitle = request.getParameter("btitle");
+			String modiBcontents = request.getParameter("bcontents");
+			
+			System.out.println("수정할 글번호 : " + modiBno);
+			System.out.println("수정할 글제목 : " + modiBtitle);
+			System.out.println("수정할 글내용 : " + modiBcontents);
+			
+			board = new Board();
+			board.setBno(modiBno);
+			board.setBtitle(modiBtitle);
+			board.setBcontents(modiBcontents);
+//			int updateResult = bsvc.boardModify(board);
+			int updateResult = 0;
+			if (updateResult > 0) {
+				//글 상세페이지로
+				response.sendRedirect(contextPath+"/Board/boardView?bno="+modiBno);
+			} else {
+				// BoardFail.jsp
+				String errorMsg = modiBno + "번 글 수정에 실패하였습니다.";
+				response.sendRedirect(contextPath+"/Board/BoardFail.jsp?errorMsg="
+										+URLEncoder.encode(errorMsg, "UTF-8"));
+			}			
+			break;
+		
+		case "/Board/boardSearch":
+			System.out.println("글 검색 요청");
+			String searchText = request.getParameter("searchText");
+			String searchType = request.getParameter("searchType"); 
+			System.out.println("검색할 단어 : " + searchText);
+			System.out.println("검색종류 : " + searchType);
+			
+			ArrayList<Board> searchList = bsvc.searchBoard(searchText, searchType);
+			request.setAttribute("bdList", searchList);
+			dispatcher = request.getRequestDispatcher("/Board/BoardList.jsp");
+			dispatcher.forward(request, response);
 			break;
 		}
 	}
