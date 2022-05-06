@@ -42,6 +42,37 @@
 			<td>${board.bcontents }</td>
 			<!-- textarea에 넣어주면 개행문자 변환해주지 않아도 입력헀던 대로 볼 수 있음 -->
 		</tr>
+		
+		<tr>
+			<th>첨부파일</th>
+			<td> 
+			<c:choose>
+			<%-- switch --%>
+				<c:when test="${board.bfilename != null }">
+				<%-- case1 / if  --%>
+					<img alt="${board.bfilename }" width="200px" 
+						 src="${pageContext.request.contextPath }/FileUpload/${board.bfilename }">
+					<br>파일명 : ${board.bfilename }
+				</c:when>
+				
+				<c:otherwise>
+				<%-- default / else --%>
+					첨부파일이 없습니다.
+				</c:otherwise>
+			</c:choose>
+			</td>
+		</tr>		
+		
+<%-- 		<c:if test="${board.bfilename != null }">
+		<tr>
+			<th>첨부파일</th>
+			<td> 
+				<img alt="${board.bfilename }" 
+					 src="${pageContext.request.contextPath }/FileUpload/${board.bfilename }" width="200px">
+				<br>파일명 : ${board.bfilename }
+			</td>
+		</tr>		
+		</c:if> --%>
 		<tr>
 			<th colspan="2">
 				<!-- 
@@ -55,7 +86,7 @@
 				 				실패 :: BoardFail.jsp -->
 					
 				<button onclick="boardModify('${board.bno }')">글수정</button>
-				<button onclick="boardDelete('${board.bno }', '${board.btitle }')">글삭제</button> 
+				<button onclick="boardDelete('${board.bno }', '${board.btitle }', '${board.bfilename }')">글삭제</button> 
 				<!-- onclick 속성을 표현하기 위해 function이 더블쿼터를 사용하고 있기 때문에
 				 그 내부의 문자표현(파라미터)은 싱글쿼터로 표현한다 -->
 			</th>
@@ -71,11 +102,11 @@
 		location.href = "boardModifyForm?mdBno="+mdBno;
 	}
 	
-	function boardDelete(delBno, delTitle){
+	function boardDelete(delBno, delTitle, delFilename){
 		console.log("boardDelete() 호출");
 		console.log("삭제할 글번호 : " + delBno);
 		console.log("삭제할 글제목 : " + delTitle);
-		location.href = "boardDelete?delBno="+delBno+"&delBtitle="+delTitle;
+		location.href = "boardDelete?delBno="+delBno+"&delBtitle="+delTitle+"&delBfilename="+delFilename;
 		/* 글삭제를 onclick 하면 boardDelete function이 실행되고,
 			function 내에서 location.href를 통해 서블릿을 호출 */
 	}

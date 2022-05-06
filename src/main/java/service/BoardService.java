@@ -1,5 +1,6 @@
 package service;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import dao.BoardDao;
@@ -47,10 +48,16 @@ public class BoardService {
 	}
 
 	// 글 삭제 기능
-	public int deleteBoard(int delBno) {
+	public int deleteBoard(int delBno, String savePath, String delBfilename ) {
 		System.out.println("BoardService.deleteBoard() 호출");
-		
+		// 파일 삭제, 저장경로, 파일명
 		int delResult = bdao.deleteBoard(delBno);
+		if (delResult > 0) {
+			if(delBfilename.length() > 0) {
+				File delFile = new File(savePath, delBfilename);
+				delFile.delete();							
+			}
+		}		
 		return delResult;
 	}
 

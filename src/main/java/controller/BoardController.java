@@ -93,7 +93,7 @@ public class BoardController extends HttpServlet {
 			boardInfo.setBfilename(bfilename);
 			System.out.println(boardInfo);
 			
-			int writeResult = 1; // bsvc.boardWrite(boardInfo);
+			int writeResult = bsvc.boardWrite(boardInfo);
 			if(writeResult > 0) {
 				// 1. 글작성에 성공했을 경우
 				// 글 목록 페이지로 이동
@@ -143,6 +143,7 @@ public class BoardController extends HttpServlet {
 			// 1. boardService 글 조회 기능 호출 및 글 정보 리턴
 			board = bsvc.getBoardInfo(bno, true);
 			request.setAttribute("board", board);
+			System.out.println(board.toString());
 			// console 출력 (System.out.println)
 			dispatcher = request.getRequestDispatcher("/Board/BoardView.jsp");
 			dispatcher.forward(request, response);
@@ -157,8 +158,14 @@ public class BoardController extends HttpServlet {
 			System.out.println("삭제할 글번호 : " + delBno);
 			String delBtitle = request.getParameter("delBtitle");
 			System.out.println("삭제할 글제목 : " + delBtitle);
+			
+			// 삭제하고자 하는 파일명을 출력
+			String delBfilename = request.getParameter("delBfilename");
+			System.out.println("삭제할 파일명 : " + delBfilename);
+			
+			
 			// service 글삭제 기능 호출 및 결과값 반환
-			int delResult = bsvc.deleteBoard(delBno);
+			int delResult = bsvc.deleteBoard(delBno,savePath,delBfilename);
 			System.out.println(delResult + "개의 게시글이 삭제되었습니다.");
 			if(delResult > 0) {
 				// 글 목록 페이지로 이동

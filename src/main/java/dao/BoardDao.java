@@ -49,7 +49,7 @@ public class BoardDao {
 	}
 	
 	public int insertBoard(Board boardInfo) {
-		String sql = "INSERT INTO BOARD VALUES (?,?,?,?,SYSDATE)";
+		String sql = "INSERT INTO BOARD VALUES (?,?,?,?,SYSDATE, ?)";
 		int insertResult = 0;
 		
 		try {
@@ -58,6 +58,7 @@ public class BoardDao {
 			pstmt.setString(2, boardInfo.getBwriter());
 			pstmt.setString(3, boardInfo.getBtitle());
 			pstmt.setString(4, boardInfo.getBcontents());
+			pstmt.setString(5, boardInfo.getBfilename());
 			insertResult = pstmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -78,6 +79,7 @@ public class BoardDao {
 				board.setBtitle(rs.getString(3));
 				board.setBcontents(rs.getString(4));
 				board.setBdate(rs.getString(5));
+				board.setBfilename(rs.getString(6));
 				bdList.add(board);
 			}
 		} catch (SQLException e) {
@@ -100,6 +102,7 @@ public class BoardDao {
 				board.setBtitle(rs.getString(3));
 				board.setBcontents(rs.getString(4));
 				board.setBdate(rs.getString(5));
+				board.setBfilename(rs.getString(6));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

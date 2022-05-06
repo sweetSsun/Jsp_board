@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="dto.Board" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +18,7 @@
 		padding: 10px;
 	}
 </style>
+<script src="https://kit.fontawesome.com/9125416ae4.js" crossorigin="anonymous"></script>
 </head>
 <script type="text/javascript">
 	var checkMsg = "${param.checkMsg}";
@@ -83,7 +85,12 @@
  		<c:forEach items="${bdList }" var="board" >
 		<tr>
 			<td>${board.bno }</td>
-			<td><a href="${pageContext.request.contextPath }/Board/boardView?bno=${board.bno }">${board.btitle }</a></td>
+			<td>
+				<a href="${pageContext.request.contextPath }/Board/boardView?bno=${board.bno }">${board.btitle }</a>
+				<c:if test="${board.bfilename != null }">
+					<i class="fa-regular fa-file"></i>
+				</c:if>				
+			</td>
 			<td>${board.bwriter }</td>
 			<td>${board.bdate }</td>
 		</tr>
