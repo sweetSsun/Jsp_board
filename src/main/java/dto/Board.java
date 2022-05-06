@@ -7,6 +7,14 @@ public class Board {
 	private String bcontents;
 	private String bdate;
 	
+	private String bfilename;
+	
+	public String getBfilename() {
+		return bfilename;
+	}
+	public void setBfilename(String bfilename) {
+		this.bfilename = bfilename;
+	}
 	public int getBno() {
 		return bno;
 	}
@@ -40,6 +48,6 @@ public class Board {
 	@Override
 	public String toString() {
 		return "Board [bno=" + bno + ", bwriter=" + bwriter + ", btitle=" + btitle + ", bcontents=" + bcontents
-				+ ", bdate=" + bdate + "]";
+				+ ", bdate=" + bdate + ", bfilename=" + bfilename + "]";
 	}
 }

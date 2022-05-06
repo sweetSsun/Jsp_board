@@ -31,7 +31,8 @@
 <body>
 	<h1>Board/BoardWrite.jsp</h1>
 	<h3>글 작성 페이지</h3>
-	<form action="boardWrite" method="post">
+	<form action="boardWrite" method="post" enctype="multipart/form-data">
+	<!-- enctype 속성이 없으면 기본값(application/x-www-form-urlencoded)으로 입력됨 -->
 	<table>
 		<tr>
 			<th>작성자</th>
@@ -44,6 +45,10 @@
 		<tr>
 			<th>글 내용</th>
 			<td><textarea rows="10" cols="20" name="bcontents"></textarea></td>
+		</tr>	
+		<tr>
+			<th>첨부파일</th>
+			<td><input type="file" name="bfile"></td>
 		</tr>	
 		<tr>
 			<th colspan="2">

@@ -45,9 +45,11 @@
 			<th colspan="4">
 			<form action="boardSearch" method=get>
 				<select name="searchType" id="searchType" onchange="changePlaceholder()">
-					<option value="btitle">글제목</option>
+					<option value="btitle">제목</option>
 					<option value="bwriter">작성자</option>
-					<option value="bcontents">글내용</option>
+					<option value="bcontents">내용</option>
+					<option value="titleContents">제목/내용</option>
+					
 				</select>
 				<input type="text" name="searchText" id="searchText" placeholder="검색할 글제목">
 				<input type="submit" value="검색">
@@ -96,8 +98,10 @@
 			check = "검색할 제목";
 		} else if (check == "bwriter") {
 			check = "검색할 작성자";
+		} else if (check == "bcontents"){
+			check = "검색할 내용"
 		} else {
-			check = "검색할 글내용"
+			check = "검색할 제목 또는 내용"
 		}
 		document.getElementById("searchText").placeholder = check;
 	}

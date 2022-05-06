@@ -136,13 +136,16 @@ public class BoardDao {
 	}
 
 	public ArrayList<Board> searchBoard(String searchText, String searchType) {
-		String sql = "SELECT * FROM BOARD WHERE " + searchType + " LIKE '%'||?||'%'"
-					+ "ORDER BY BNO";
+		String sql = "SELECT * FROM BOARD WHERE ";
 		ArrayList<Board> searchList = new ArrayList<Board>();
+		if (searchType.equals("titleContents")) {
+			sql = sql + "BTITLE LIKE '%" + searchText + "%' OR BCONTENTS LIKE '%" + searchText + "%' ORDER BY BNO";
+		} else {
+			sql = sql + searchType + " LIKE '%" + searchText + "%' ORDER BY BNO";
+		}	
+		System.out.println(sql);
 		try {
 			pstmt = con.prepareStatement(sql);
-//			String text = "%" + searchText + "%";
-			pstmt.setString(1, searchText);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				Board board = new Board();

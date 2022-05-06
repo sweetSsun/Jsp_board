@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+
 import dto.Board;
 import service.BoardService;
 
@@ -47,24 +50,50 @@ public class BoardController extends HttpServlet {
 		RequestDispatcher dispatcher; // dispatcher를 여러번 사용해야 하기 때문에 선언을 switch문 위에서
 		request.setCharacterEncoding("UTF-8");
 		
+		String savePath = "D:\\Sun_Workspace\\Jsp_board\\src\\main\\webapp\\FileUpload";
+		int size = 1024*1024*10; // 최대 업로드 용량 10MB / 1KB*1KB >> 1MB*10개
+		
 		switch(url) {
 		case "/Board/boardWrite":
 			System.out.println("글 작성 페이지 데이터 확인");
 			// BoardWrite.jsp 에서 보내준 데이터 확인
 			// 글작성자, 글제목, 글내용
+			/*
 			String bwriter = request.getParameter("bwriter");
 			String btitle = request.getParameter("btitle");
 			String bcontents = request.getParameter("bcontents");
+			String bfilename = request.getParameter("bfile");
 			System.out.println("글작성자 : " + bwriter);
 			System.out.println("글 제목 : " + btitle);
 			System.out.println("글 내용 : " + bcontents);
+			System.out.println("bfilename : " + bfilename);
+			*/
+			MultipartRequest multi
+			= new MultipartRequest(request, savePath, size, "UTF-8", new DefaultFileRenamePolicy());
+			// request가 multi 객체에 담기기 때문에 multi에서 Parameter를 꺼내줌
+			String bwriter = multi.getParameter("bwriter");
+			String btitle = multi.getParameter("btitle");
+			String bcontents = multi.getParameter("bcontents");
+			// 파일에서 원본파일명만 추출해서 저장하기 위한 변수
+			String bfilename = multi.getOriginalFileName( (String)multi.getFileNames().nextElement() );
+			// 파일태그는 name에 해당하는 Element를 따로 찾아주어야 함
+			// getOriginalFileName : 원본파일을 찾아주는 get method
+			// getFileNames() : form 태그 내부에 담겨있는 type이 file인 name들을 받아온다
+			// nextElement() : 받아온 목록 중에 요소 선택 (rs.next()와 비슷한 기능),
+			//			       file 타입이 여러 개라면 반복문으로 저장 or 해당 필드를 배열로 선언
+			// 원본파일명이기 때문에 중복데이터는 처리 불가
+			
+			
+			System.out.println("bfilename : " + bfilename);
 			
 			Board boardInfo = new Board();
 			boardInfo.setBwriter(bwriter);
 			boardInfo.setBtitle(btitle);
 			boardInfo.setBcontents(bcontents);
+			boardInfo.setBfilename(bfilename);
+			System.out.println(boardInfo);
 			
-			int writeResult = bsvc.boardWrite(boardInfo);
+			int writeResult = 1; // bsvc.boardWrite(boardInfo);
 			if(writeResult > 0) {
 				// 1. 글작성에 성공했을 경우
 				// 글 목록 페이지로 이동
@@ -169,8 +198,8 @@ public class BoardController extends HttpServlet {
 			board.setBno(modiBno);
 			board.setBtitle(modiBtitle);
 			board.setBcontents(modiBcontents);
-//			int updateResult = bsvc.boardModify(board);
-			int updateResult = 0;
+			int updateResult = bsvc.boardModify(board);
+//			int updateResult = 0;
 			if (updateResult > 0) {
 				//글 상세페이지로
 				response.sendRedirect(contextPath+"/Board/boardView?bno="+modiBno);
