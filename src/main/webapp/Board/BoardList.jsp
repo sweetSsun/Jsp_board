@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="dto.Board" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
@@ -87,6 +88,7 @@
 			<td>${board.bno }</td>
 			<td>
 				<a href="${pageContext.request.contextPath }/Board/boardView?bno=${board.bno }">${board.btitle }</a>
+				[filename 길이 확인 : ${fn:length(board.bfilename) } ] <!-- 길이가 0 -->
 				<c:if test="${board.bfilename != null }">
 					<i class="fa-regular fa-file"></i>
 				</c:if>				

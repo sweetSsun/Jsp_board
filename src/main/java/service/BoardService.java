@@ -53,6 +53,7 @@ public class BoardService {
 		// 파일 삭제, 저장경로, 파일명
 		int delResult = bdao.deleteBoard(delBno);
 		if (delResult > 0) {
+//			if(delBfilename != null) { // 파일명은 없으면 null값일 것 같은데 왜 길이가 0인걸까요????????????
 			if(delBfilename.length() > 0) {
 				File delFile = new File(savePath, delBfilename);
 				delFile.delete();							
